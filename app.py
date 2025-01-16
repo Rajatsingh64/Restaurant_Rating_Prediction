@@ -1,100 +1,135 @@
 import streamlit as st
-import os, sys
-from datetime import datetime
-from src.exception import SrcException
-from src.logger import logging
-from src.predictor import ModelResolver
 import pandas as pd
-import numpy as np
-from src.utils import load_object
-from src.config import oridinal_features, nominal_features, target_column
-from src.utils import apply_label_encoder
+import os
+from sklearn.preprocessing import LabelEncoder
+from src.utils import load_object, apply_label_encoder
+from src.config import oridinal_features, nominal_features
+from src.predictor import ModelResolver
 
-# Define the directory for storing predictions
-PREDICTION_DIR = "prediction"
+# Streamlit page configuration
+st.set_page_config(
+    page_title="Zomato Rate Prediction 🍴",
+    page_icon="🍴",
+    layout="centered",
+)
 
-# Function to handle prediction
-def start_single_prediction(input_data):
-    try:
-        logging.info(f'{">"*20} Single Prediction {"<"*20}')
-        
-        logging.info(f"Creating model resolver object")
-        model_resolver = ModelResolver(model_registry="saved_models")
-        
-        # Apply transformations to input data
-        input_data = apply_label_encoder(input_data, oridinal_features)
+# Path to background image
+background_image_path = "rest_image_free.jpg"  
 
-        # Load transformer pkl file
-        transformer = load_object(file_path=model_resolver.get_latest_transformer_path())  
-        input_feature_names = list(transformer.feature_names_in_)  # Features used in training
-        feature_encoded = transformer.transform(input_data[input_feature_names])  # Transforming features
-        feature_encoded_df = pd.DataFrame(feature_encoded, columns=transformer.get_feature_names_out(input_feature_names))  # Transformed feature names
-        
-        # Combine transformed features with original data
-        input_data_encoded = pd.concat([input_data.drop(columns=input_feature_names).reset_index(drop=True), feature_encoded_df.reset_index(drop=True)], axis=1)
-        
-        logging.info(f'{">"*20} Selecting Input Features  {"<"*20}')
-        input_df = input_data_encoded.drop('rate', axis=1, errors="ignore")  # Independent features
-        
-        # Load the best model
-        model = load_object(file_path=model_resolver.get_latest_model_path())  
-        
-        # Perform prediction
-        prediction = model.predict(input_df)
-        
-        return prediction[0]  # Return the predicted rate
-    
-    except Exception as e:
-        raise SrcException(e, sys)
+# Display the background image using CSS
+st.markdown(
+    f"""
+    <style>
+        .stApp {{
+            background-image: url("{background_image_path}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-# Streamlit app for user input and prediction
-st.title("Restaurant Rate Prediction App")
+# Custom CSS for classy Zomato-like theme
+st.markdown(
+    """
+    <style>
+        body {
+            background-color: #FFFFFF; /* White background */
+        }
+        .stApp {
+            background-color: #FCECEC; /* Light reddish-white background */
+        }
+        h1, h2, h3, .stMarkdown {
+            color: #E60012; /* Zomato Red for headers */
+            font-family: Arial, sans-serif;
+        }
+        .stButton > button {
+            background-color: #E60012; /* Zomato red button */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 10px 15px;
+            border: none;
+        }
+        .stButton > button:hover {
+            background-color: #FF5733; /* Lighter red for hover */
+            color: #FFFFFF;
+        }
+        .stTextInput, .stSelectbox, .stNumberInput, .stSlider {
+            background-color: #FFFFFF; /* White input fields */
+            color: black;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        footer {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 30px;
+            color: #E60012;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-# Use a default CSV file or user input for prediction
+# App Title
+st.title("Zomato Rate Prediction 🍴")
+
+# Add Author Info
+st.markdown(
+    '<p style="text-align: center; font-size: 14px; color: #000000;">Created by <b>Rajat Singh</b> at <b>iNeuron.ai</b></p>',
+    unsafe_allow_html=True,
+)
+
+# Load Model and Data
+model_resolver = ModelResolver()
+model_path = model_resolver.get_latest_model_path()
+transformer_path = model_resolver.get_latest_transformer_path()
+model = load_object(file_path=model_path)
+transformer = load_object(file_path=transformer_path)
+
 file_path = os.path.join(os.getcwd(), "dataset/cleaned_zomato.csv")
+df = pd.read_csv(file_path)
 
-if __name__ == "__main__":
-    try:
-        # Read the file and display the DataFrame for dropdowns
-        df = pd.read_csv(file_path)
-        
-        # Dropdowns for selecting input data for prediction
-        st.write("Select values for prediction:")
+# Inputs for the prediction
+st.write("### Select Input Values for Prediction")
+online_order = st.selectbox('Online Order (Yes/No)', ['Yes', 'No'])
+book_table = st.selectbox('Book Table (Yes/No)', ['Yes', 'No'])
+location = st.selectbox('Select Location', df['location'].unique())
+rest_type = st.selectbox('Select Restaurant Type', df['rest_type'].unique())
+cuisines = st.selectbox('Select Cuisines', df['cuisines'].unique())
+approx_cost = st.number_input('Enter Approximate Cost', min_value=0.0, value=500.0)
+votes = st.slider('Select Number of Votes', min_value=1, max_value=1000, value=100, step=1)
 
-        # Add dropdowns for each of the features (for demonstration, we assume columns 'location', 'rest_type', 'cuisines')
-        online_order = st.selectbox('Online Order (Yes/No)', ['Yes', 'No'])
-        book_table = st.selectbox('Book Table (Yes/No)', ['Yes', 'No'])
-        location = st.selectbox('Select Location', df['location'].unique())
-        rest_type = st.selectbox('Select Restaurant Type', df['rest_type'].unique())
-        cuisines = st.selectbox('Select Cuisines', df['cuisines'].unique())
-        approx_cost = st.number_input('Enter Approximate Cost', min_value=0.0, value=500.0)
-        
-        # Add a slider for votes
-        votes = st.slider('Select Number of Votes', min_value=1, max_value=1000, value=100, step=1)
+# Prepare input features for prediction
+input_features = pd.DataFrame({
+    'online_order': [online_order],
+    'book_table': [book_table],
+    'location': [location],
+    'rest_type': [rest_type],
+    'cuisines': [cuisines],
+    'approx_cost': [approx_cost],
+    'votes': [votes]
+})
 
-        # Prepare the selected input data for prediction
-        selected_input = pd.DataFrame({
-            'online_order': [online_order],
-            'book_table': [book_table],
-            'location': [location],
-            'rest_type': [rest_type],
-            'cuisines': [cuisines],
-            'approx_cost': [approx_cost],
-            'votes': [votes]  # Add the votes slider value
-        })
+df = apply_label_encoder(df, oridinal_features)
+encoded_features = transformer.transform(df[nominal_features])
+encoded_df = pd.DataFrame(encoded_features, columns=transformer.get_feature_names_out())
+input_df = pd.concat([df.drop(columns=nominal_features).reset_index(drop=True), encoded_df.reset_index(drop=True)], axis=1)
+input_df = input_df.drop("rate", axis=1)
 
-        # Button to trigger prediction
-        if st.button('Predict'):
-            st.write("Starting prediction...")
+# Prediction Button
+if st.button('Predict Rate'):
+    predicted_rate = model.predict(input_df)
+    formatted_rate = round(predicted_rate[0], 1)  # Format to 1 decimal point
+    st.write(f"### The Predicted Rate for the Selected Input is: **{formatted_rate} / 5**")
 
-            # Trigger prediction with the selected input
-            predicted_rate = start_single_prediction(selected_input)
-
-            # Round the predicted rate to 1 decimal place
-            predicted_rate_rounded = round(predicted_rate, 1)
-            
-            # Display the predicted rate
-            st.success(f"The predicted rate for the selected input is: {predicted_rate_rounded}")
-            
-    except Exception as e:
-        st.error(f"Error during prediction: {e}")
+# Footer
+st.markdown(
+    '<footer>© 2025 Rajat Singh | iNeuron.ai | All Rights Reserved</footer>',
+    unsafe_allow_html=True,
+)
