@@ -8,18 +8,21 @@ file_name = "cleaned_zomato.csv"
 train_file_name="train.csv"
 test_file_name="test.csv"
 transformer_object_file_name="transformer.pkl"
+encoder_object_file_name="encoder.pkl"
 model_file_name="model.pkl"
 
 class ModelResolver:
 
     def __init__(self , model_registry:str ="saved_models" , 
                  transformer_dir_name="transformer" , 
-                 model_dir_name="model"):
+                 model_dir_name="model" ,
+                 encoder_dir_name="encoder"):
         try:
             self.model_registry=model_registry
             os.makedirs(self.model_registry , exist_ok=True)
             self.transformer_dir_name=transformer_dir_name
             self.model_dir_name=model_dir_name
+            self.encoder_dir_name=encoder_dir_name
         except Exception as e:
             raise SrcException(e,sys)  
         
@@ -52,6 +55,14 @@ class ModelResolver:
         except Exception as e:
             raise e
         
+    def get_latest_encoder_path(self):
+        try:
+            latest_dir=self.get_latest_dir_path()
+            if latest_dir is None:
+                raise Exception(f"Transformer is not Available")
+            return os.path.join(latest_dir,self.encoder_dir_name , encoder_object_file_name)
+        except Exception as e:
+            raise e 
     
     def get_latest_save_dir_path(self)->str:
         try:
@@ -77,7 +88,12 @@ class ModelResolver:
         except Exception as e:
             raise e
 
-    
+    def get_latest_save_encoder_path(self):
+        try:
+            latest_dir = self.get_latest_save_dir_path()
+            return os.path.join(latest_dir,self.encoder_dir_name,encoder_object_file_name)
+        except Exception as e:
+            raise e
 
 class Predictor:
 

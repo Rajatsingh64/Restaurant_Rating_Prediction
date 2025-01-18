@@ -1,0 +1,155 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: red; /* Make all text red */
+}
+
+/* Header */
+header {
+    background-color: #dc3545;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+h1 {
+    font-size: 30px;
+    text-align: center;
+    color: #ffffff;
+    margin-top: 20px;
+}
+
+/* Main Layout */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Introduction Section */
+.intro {
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* Button Section */
+section.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+    padding: 0;
+}
+
+/* Button Styling */
+.button {
+    background-color: pink; /* Red background for buttons */
+    color: white; /* White text */
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 15px;
+    display: inline-block;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.4s ease;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    font-size: 15px;
+    margin-top: 15px;
+    color: red; /* Footer text will also be red */
+}
+
+/* Footer Links in the Button Section */
+footer div {
+    margin-top: 10px;
+}
+
+/* Navigation Links Section - Bold Red Color */
+footer a {
+    text-decoration: none;
+    color: red; /* Make navigation links red */
+    font-weight: bold; /* Bold red color */
+    margin: 0 10px;
+    font-size: 14px;
+}
+
+/* Navigation Links Hover Effect */
+footer a:hover {
+    color: white; /* White text on hover */
+}
+
+/* Styling for "Created by Rajat Singh" */
+footer p {
+    color: white; /* White text for "Created by Rajat Singh" */
+    font-size: 14px;
+}
+
+/* Streamlit Specific Styles */
+.stButton button {
+    background-color: #dc3545; /* Red color */
+    color: white;
+}
+
+.stButton button:hover {
+    background-color: #c82333; /* Darker red color on hover */
+}
+
+/* Center-align the entire content */
+.main {
+    width: 80%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* Footer Text Style */
+.footer {
+    text-align: center;
+    font-size: 14px;
+    color: #000000;
+    padding-top: 10px;
+    margin-top: 0;
+}
+
+/* Compact Layout Adjustments */
+.stText {
+    font-size: 14px;
+}
+
+.stSelectbox, .stSlider, .stNumberInput {
+    font-size: 12px;
+    margin-bottom: 2px;
+    padding: 4px 6px;
+    margin: 1px 0;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Remove Excessive Margins */
+.main > .block-container {
+    padding-top: 0;
+}
+
+/* Sidebar Navigation Links */
+.stSidebar .css-1gkekv8 a {
+    color: red !important;
+    font-weight: bold !important;
+}

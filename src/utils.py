@@ -28,7 +28,6 @@ def get_collection_as_dataframe(database_name , collection_name):
         logging.info(f'Dataframe columns Available Rows {df.shape[0]} columns {df.shape[1]}')
         if '_id' in df.columns:
             df=df.drop("_id" , axis=1)
-        df.to_csv("dataset/zomato.csv" ,index=False)    
         return df 
     except Exception as e:
         print(e,sys)
@@ -60,27 +59,7 @@ def convert_columns_float(df: pd.DataFrame, exclude_columns: list) -> pd.DataFra
     except Exception as e:
         raise e
 
-def apply_label_encoder(data: pd.DataFrame, columns: list) -> pd.DataFrame:
-    """
-    Apply label encoding to specified columns in a DataFrame.
-
-    Parameters:
-        data (pd.DataFrame): The DataFrame containing the data.
-        columns (list): A list of column names to encode.
-
-    Returns:
-        pd.DataFrame: The DataFrame with label-encoded columns.
-    """
-    encoder = LabelEncoder()
-    for column in columns:
-        if data[column].isnull().any():
-            print(f"Warning: Missing values found in column '{column}'. Filling with 'Unknown'.")
-            data[column] = data[column].fillna('Unknown')
-        data[column] = encoder.fit_transform(data[column])
     
-    return data
-
-
 def save_object(file_path:str , obj:object)->None:
     try:
         logging.info(f"Entered the Save_Object method of utils")

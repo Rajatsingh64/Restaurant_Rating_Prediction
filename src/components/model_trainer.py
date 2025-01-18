@@ -88,7 +88,7 @@ class ModelTrainer:
             
             if r2_test_score < self.model_trainer_config.expected_score:
                 raise Exception(f"Model is not good as it is not able to give \
-                                 expected accuracy :{self.model_trainer_config.expected_score}: Model actual score : {r2_test_score}")
+                                expected accuracy :{self.model_trainer_config.expected_score}: Model actual score : {r2_test_score}")
             
             logging.info(f"checking if our model is overfitting or not")    
             diff =abs(r2_train_score - r2_test_score)

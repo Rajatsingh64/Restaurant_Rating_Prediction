@@ -3,12 +3,14 @@ numpy
 matplotlib
 typing
 seaborn 
+dill
 sklearn
 imblearn
 xgboost
 pymongo
 jupyter
 streamlit
+gunicorn
 ipykernel
 python-dotenv
 -e .

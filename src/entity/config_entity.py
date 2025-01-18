@@ -42,6 +42,7 @@ class DataTransformationConfig:
     def __init__(self , training_pipeline_config:TrainingPipelineConfig):
           self.data_tranformer_dir=os.path.join(training_pipeline_config.artifact_directory , "data_transformer")
           self.transformed_object_file_path=os.path.join(self.data_tranformer_dir , "transformer.pkl")
+          self.encoder_object_file_path=os.path.join(self.data_tranformer_dir , "encoder.pkl")
           self.data_tranformed_train_file_path= os.path.join(self.data_tranformer_dir , "transformed" , "train.npz")
           self.data_tranformed_test_file_path= os.path.join(self.data_tranformer_dir , "transformed" , "test.npz")
                              
@@ -70,3 +71,4 @@ class ModelPusherConfig:
         self.pusher_model_dir = os.path.join(self.model_pusher_dir,"saved_models")
         self.pusher_model_path = os.path.join(self.pusher_model_dir,"model.pkl")
         self.pusher_transformer_path = os.path.join(self.pusher_model_dir,"transformer.pkl")
+        self.pusher_encoder_path=os.path.join(self.pusher_model_dir , "encoder.pkl")

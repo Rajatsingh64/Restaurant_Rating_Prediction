@@ -12,7 +12,6 @@ file_path=os.path.join(os.getcwd() ,"dataset/cleaned_zomato.csv") #cleaned datas
 if __name__=="__main__":
     
     df=pd.read_csv(file_path)
-    df=df.sample(40000)
     #To dump data into Mongo db we need to convert data into keys and values format(eg.Dict or json format)
     data_dict=df.to_dict(orient="records")
 

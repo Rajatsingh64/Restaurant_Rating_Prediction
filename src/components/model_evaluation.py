@@ -8,7 +8,8 @@ from src import utils
 import pandas as pd
 import numpy as np
 from sklearn.metrics import r2_score
-from src.config import target_column  , oridinal_features , nominal_features
+import streamlit as st
+from src.config import target_column  , ordinal_features , nominal_features
 
 class ModelEvaluation:
 
@@ -42,15 +43,20 @@ class ModelEvaluation:
             logging.info(f"Finding Location of Transformer model")
             transformer_path = self.model_resovler.get_latest_transformer_path()
             model_path = self.model_resovler.get_latest_model_path()
+            encoder_path=self.model_resovler.get_latest_encoder_path()
 
             logging.info(f"Previous Trained objects of Transformer and Model")
             transformer= utils.load_object(file_path=transformer_path)
             model= utils.load_object(file_path=model_path)
+            encoder=utils.load_object(file_path=encoder_path)
+
 
             logging.info(f"Currently Trained Model Objects")
             #currently trrained model objects
             current_model=utils.load_object(file_path=self.model_trainer_artifact.model_file_path)
             current_transformer=utils.load_object(file_path=self.data_transformation_artifact.transformed_object_file_path)
+            current_encoder=utils.load_object(file_path=self.data_transformation_artifact.encoder_object_file_path)
+
             test_df =pd.read_csv(self.data_ingestion_artifact.test_file_path)
             
            # Input and target data 
@@ -58,7 +64,8 @@ class ModelEvaluation:
             target_df=test_df[target_column] 
             
             #use same process Performed while data transformation , i used lable encoder on ordinal features
-            input_test_df=utils.apply_label_encoder(input_test_df , oridinal_features)
+            for col in ordinal_features:
+                input_test_df[col]=encoder.transform(input_test_df[col])
 
             #Follow Same Process used in a data transformation and Training , to aviod error such as (eg.shape error)
             #Features of previous transfomer model , but i dont have old or Production model.
@@ -77,7 +84,7 @@ class ModelEvaluation:
             y_pred=current_model.predict(input_df)
             current_model_score=r2_score(target_df, y_pred)
             logging.info(f"Accuracy using Current Model Training : {current_model_score}")
-            if current_model_score<previous_model_score:
+            if current_model_score<=previous_model_score:
                 logging.info(f"Current trained model is not better than previous model")
                 raise Exception("Current trained model is not better than previous model")
         
