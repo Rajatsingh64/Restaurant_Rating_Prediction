@@ -35,7 +35,7 @@ class DataValidationConfig:
           self.data_validation_dir=os.path.join(training_pipeline_config.artifact_directory , "data_validation")
           self.report_file_path = os.path.join(self.data_validation_dir , "report.yml")
           self.missing_threshold=0.3 #random threshold
-          self.base_data_file_path =os.path.join("dataset/cleaned_zomato.csv")  #Production dataset /old data for validation
+          self.base_data_file_path =os.path.join("cleaned_zomato.csv")  #Production dataset /old data for validation
 
 class DataTransformationConfig:
 
