@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of your application code into the container
 COPY . /app/
 
-# Expose the port the app will run on (Streamlit default is 8501)
-EXPOSE 8501
+# Expose the port the app will run on (Streamlit default is 8501, but using 8080 in this case)
+EXPOSE 8080
 
-# Command to run the app with Gunicorn and Streamlit
-CMD ["gunicorn", "-b", "0.0.0.0:8501", "your_app:app"]
+# Command to run the Streamlit app
+CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0", "--server.port", "8080"]

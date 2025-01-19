@@ -25,9 +25,9 @@ Restaurant-Rating-Prediction/
 │   └── workflows/
 │       └── main.yaml                 # GitHub Actions CI/CD pipeline
 │
-|── templates/                        # templates for app design 
-│     ├── style.css                   # styling app
-│     |__ index.html                  #
+|── templates/                        
+│     ├── style.css                   # Custom styling for Web App
+│     |__ index.html                  # Web application Documentation
 │      
 |── src/
 │   ├── components/                   # Core pipeline components
