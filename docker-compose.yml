@@ -1,6 +1,6 @@
 version: "2"
 services:
- application:
+  application:
     image: ${IMAGE_NAME}
     container_name: rest-app
     ports:
@@ -10,4 +10,4 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
       - MONGO_DB_URL=${MONGO_DB_URL}
-     
+    restart: always  # This will ensure the container restarts automatically if it stops
