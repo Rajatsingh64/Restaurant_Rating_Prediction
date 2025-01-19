@@ -1,19 +1,21 @@
-# Use the official Python 3.12 image from Docker Hub
 FROM python:3.12-slim
 
-# Set the working directory in the container
+EXPOSE 8080
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    software-properties-common \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Copy the requirements.txt file into the container at /app
-COPY requirements.txt /app/
+COPY . /app
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
-# Copy the rest of your application code into the container
-COPY . /app/
-
-# Expose the port the app will run on (Streamlit default is 8501, but using 8080 in this case)
-EXPOSE 8080
+# Optional: Add a health check
+HEALTHCHECK CMD curl --fail http://localhost:8501/_health || exit 1
 
 ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
