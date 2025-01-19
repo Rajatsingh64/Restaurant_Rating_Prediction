@@ -5,14 +5,16 @@ import sys
 from src.utils import load_object, save_object, get_collection_as_dataframe
 from src.config import ordinal_features, nominal_features
 from src.pipeline.training_pipeline import initiate_training_pipeline
+def some_training_function():
+    st.text("Training started...")
 from src.predictor import ModelResolver
 import warnings
-from src.exception import SrcException
-from src.logger import logging
 import time
 import threading
 
 warnings.filterwarnings("ignore")
+def some_training_function():
+    st.text("Training started...")
 
 # Streamlit page configuration
 st.set_page_config(
@@ -57,15 +59,9 @@ def run_training_pipeline():
                 # Start the training pipeline
                 initiate_training_pipeline()
                 
-                # Simulate training steps (simplified for performance)
-                for i in range(5):
-                    if stop_training_event.is_set():
-                        spinner_placeholder.text("Training has been stopped.")
-                        return
-                    time.sleep(2)
-                    spinner_placeholder.text(f"Training in progress... Step {i + 1}/5")
+                # Simulated training steps (removed extra sleep)
+                spinner_placeholder.text("Training complete. Model, transformer, and encoder saved.")
                 
-                spinner_placeholder.success("Training complete. Model, transformer, and encoder saved.")
     except Exception as e:
         st.error(f"Error occurred: {e}")
     finally:
@@ -148,37 +144,31 @@ if action == "Predict Rate":
         # Add a "Start Prediction" button for prediction
         if st.button("Start Prediction", key="start_prediction"):
             prediction_placeholder = st.empty()  # Create an empty container for the prediction result
-            
-            # Show a spinner during prediction
             with prediction_placeholder.container():
                 with st.spinner("Making prediction... Please wait."):
-
                     time.sleep(2)  # Simulated delay to create prediction effect
                     try:
                         prediction_text = "The Predicted Rate for the Selected Input is: "
-                        placeholder=st.empty()  # Placeholder to show animated output
+                        placeholder = st.empty()  # Placeholder to show animated output
+                        
                         # Prediction logic
                         predicted_rate = model.predict(encoded_input_features)
                         rate = round(predicted_rate[0], 1)
                         st.markdown(f'<p style="color: red; font-size: 24px; font-weight: bold; text-align: center;">{prediction_text}</p>', unsafe_allow_html=True)
 
+                        # Animated transition for prediction display
                         for i in range(10):
-                           # Only animate the predicted rate value, making it bigger with each transition
-                           placeholder.markdown(f'<p style="color:red; font-size: {20+ i*5}px; text-align: center;">{round(rate, 1)} / 5</p>', unsafe_allow_html=True)
-                           time.sleep(0.1)  # Delay between updates for animation
-                        # Final prediction display with larger text after animation, centered and bold
+                            placeholder.markdown(f'<p style="color:red; font-size: {20 + i * 5}px; text-align: center;">{round(rate, 1)} / 5</p>', unsafe_allow_html=True)
+                            time.sleep(0.1)
                         placeholder.markdown(f'<p style="color: red; font-weight: bold; font-size: 50px; text-align: center;">{round(rate, 1)} / 5</p>', unsafe_allow_html=True)
                     except Exception as e:
                         st.error(f"Prediction error: {e}")
-            
 
 # Start or stop training pipeline
 if action == "Run Training Pipeline":
     if not training_in_progress:
         if st.button("Start Training"):
-            # Reset stop event for a new training session
             stop_training_event.clear()
-            # Start training in a separate thread
             training_thread = threading.Thread(target=run_training_pipeline, daemon=True)
             training_thread.start()
             
