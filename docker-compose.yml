@@ -10,4 +10,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
       - MONGO_DB_URL=${MONGO_DB_URL}
-    restart: always  # This will ensure the container restarts automatically if it stops
+    restart: always  # Ensures automatic restart of the container if it stops
+    mem_limit: 2g  # Allocates a maximum of 2 GB of memory for the container
+    mem_reservation: 1g  # Reserves 1 GB of memory for the container to avoid connection loss
+    cpus: 1.0  # Limits CPU usage to 1 CPU core (you can adjust this value as needed)
