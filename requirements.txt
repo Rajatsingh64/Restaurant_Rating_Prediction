@@ -6,7 +6,7 @@ seaborn== 0.13.2
 scikit-learn==1.5.2
 imbalanced-learn
 xgboost==1.6.2
-pymongo==4.2.0
+pymongo[srv]==4.2.0
 jupyter==1.0.0
 streamlit==1.32.0
 gunicorn
