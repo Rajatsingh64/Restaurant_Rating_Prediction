@@ -1,8 +1,59 @@
-# 📊 Restaurant Rating Prediction 🚀
+# 📊 Restaurant Rating Prediction  App🚀
 
 This project predicts restaurant ratings using the **Zomato Bengaluru Dataset** from Kaggle. The project implements a robust **MLOps Training Pipeline** in Python 3.12, designed to be modular, scalable, and production-ready.
 
 ---
+
+
+This app predicts restaurant ratings based on user inputs, such as location, cuisine type, and more. Below is an overview of the app's functionality with visual representations of each feature.
+
+---
+
+## 1. Training Pipeline
+![Training Pipeline](demo/app_image1.gif)
+
+When you click the **"Run training Pipeline"** button, After clicking **"start training"** button the app starts training the machine learning model. Please note that training can take a significant amount of time, especially if the instance resources are low. Avoid triggering it frequently in such cases. 
+
+---
+
+## 2. Prediction Page
+![Prediction Page](demo/app_image2.gif)
+
+On the **Prediction Page**, accessible via the **"Predict Rate"** button in the sidebar, users can input features to predict restaurant ratings. The input form is split into two sections for ease of use:
+
+### Input Features:
+- **Online Order**: Select if the restaurant accepts online orders.
+- **Book Table**: Indicate if table booking is available.
+- **Location**: Choose the restaurant's location.
+- **Restaurant Type**: Specify the type of restaurant.
+
+In another section:
+- **Cuisines**: Select the type of cuisines offered.
+- **Approximate Cost**: Enter the average cost for two people.
+- **Votes**: Adjust the slider to provide the number of votes the restaurant has received.
+
+#### **Important Features**:
+The app places a higher weight on features like:
+- **Votes**
+- **Approximate Cost**
+- **Book Table**
+
+These features significantly impact the prediction model's performance.
+
+---
+
+## 3. Prediction Button
+![Prediction Button](demo/app_image3.gif)
+
+After entering the required details, click the **"Predict Rate"** button to get the predicted restaurant rating. The prediction result is displayed clearly, providing actionable insights.
+
+---
+
+### **Key Features**
+- **Training and Prediction**: Seamless switching between training and prediction workflows.
+- **User-Friendly Interface**: Intuitive and easy-to-use design with a sidebar for navigation.
+- **Accurate Predictions**: Designed to emphasize key features like votes and approximate cost for better prediction accuracy.
+
 
 ## 🛠️ Step-by-Step Explanation
 
