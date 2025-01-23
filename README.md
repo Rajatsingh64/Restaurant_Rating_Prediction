@@ -68,7 +68,7 @@ After entering the required details, click the **"Predict Rate"** button to get 
     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" height="60">&nbsp;&nbsp;&nbsp;
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" alt="HTML5" height="60">&nbsp;&nbsp;&nbsp;
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/62/CSS3_logo.svg" alt="CSS3" height="60">&nbsp;&nbsp;&nbsp;
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/MongoDB_Logo.svg" alt="MongoDB Atlas" height="60">
+    <img src="https://www.mongodb.com/assets/images/global/favicon.ico" alt="MongoDB" height="60">
 </p>
 
 
@@ -127,3 +127,63 @@ Restaurant-Rating-Prediction/
 ├── README.md                         # Project documentation
 ├── requirements.txt                  # Dependencies for the project
 └── research.ipynb                    # Jupyter notebooks for initial analysis
+
+
+## EC2 aws commands for awscli
+
+# Streamlit App Deployment on EC2 using Docker and GitHub Actions
+
+This guide provides step-by-step commands to deploy a Streamlit app on an EC2 instance using Docker, with automatic deployment through GitHub Actions.
+
+## Commands for EC2 Setup and Deployment
+
+1. **Launch an EC2 Instance** using the AWS Management Console with your preferred settings.
+
+2. **Connect to Your EC2 Instance**:
+# Streamlit App Deployment on EC2 using Docker
+
+This guide provides step-by-step commands to manually deploy a Streamlit app on an EC2 instance using Docker.
+
+## Commands for Aws Cli after Launching EC2 Instance
+
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
+
+##  Github Repo Secrets Setup 
+
+```
+![Git Secrets](demo/deploy_image1.gif)
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_REGION=
+AWS_ECR_LOGIN_URI=
+ECR_REPOSITORY_NAME=
+BUCKET_NAME=
+MONGO_DB_URL=
+```
+
+## Run All GitHub Runner Commands in AWS CLI and Activate It
+
+### **1. Set Up GitHub Actions Runner on EC2**
+
+1. Navigate to **Settings > Actions > Runners** in your GitHub repository.
+2. Follow the instructions provided by GitHub to download and configure the runner on your EC2 instance.
+
+---
+
+### **2. Download and Configure GitHub Actions Runner on EC2**
+
+Run the following command to download the runner on your EC2 instance:
+
+
+```bash
+curl -o actions-runner-linux-x64-<version>.tar.gz -L https://github.com/actions/runner/releases/download/v<version>/actions-runner-linux-x64-<version>.tar.gz
+tar xzf actions-runner-linux-x64-<version>.tar.gz
+
+```
+![Git Hub Runner Ativation](demo/deploy_image2.gif)
