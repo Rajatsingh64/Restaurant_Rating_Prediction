@@ -156,12 +156,10 @@ sudo usermod -aG docker ubuntu
 newgrp docker
 ```
 
-
-
-
+```
 ![Git Secrets](demo/deploy_image1.gif)
 
-```
+
 Github Repo Secrets Setup 
 
 AWS_ACCESS_KEY_ID=
@@ -173,7 +171,6 @@ AWS_REGION=
 AWS_ECR_LOGIN_URI=
 
 ECR_REPOSITORY_NAME=
-
 
 MONGO_DB_URL=
 ```
