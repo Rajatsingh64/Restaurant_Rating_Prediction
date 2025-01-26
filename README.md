@@ -1,9 +1,8 @@
-# 📊 Restaurant Rating Prediction  App🚀
+# 📊 Restaurant Rating Prediction App 🚀
 
 This project predicts restaurant ratings using the **Zomato Bengaluru Dataset** from Kaggle. The project implements a robust **MLOps Training Pipeline** in Python 3.12, designed to be modular, scalable, and production-ready.
 
 ---
-
 
 This app predicts restaurant ratings based on user inputs, such as location, cuisine type, and more. Below is an overview of the app's functionality with visual representations of each feature.
 
@@ -71,6 +70,7 @@ After entering the required details, click the **"Predict Rate"** button to get 
     <img src="https://www.mongodb.com/assets/images/global/favicon.ico" alt="MongoDB" height="60">
 </p>
 
+---
 
 ## 🛠️ Step-by-Step Explanation
 
@@ -127,26 +127,23 @@ Restaurant-Rating-Prediction/
 ├── README.md                         # Project documentation
 ├── requirements.txt                  # Dependencies for the project
 └── research.ipynb                    # Jupyter notebooks for initial analysis
+```
 
+---
 
-EC2 aws commands for awscli
+## Deployment Guide
 
-Streamlit App Deployment on EC2 using Docker and GitHub Actions
+### **Streamlit App Deployment on EC2 using Docker and GitHub Actions**
 
 This guide provides step-by-step commands to deploy a Streamlit app on an EC2 instance using Docker, with automatic deployment through GitHub Actions.
 
-Commands for EC2 Setup and Deployment
+#### Commands for EC2 Setup and Deployment
 
-1. Launch an EC2 Instance using the AWS Management Console with your preferred settings.
+1. **Launch an EC2 Instance** using the AWS Management Console with your preferred settings.
 
-2. Connect to Your EC2 Instance:
-# Streamlit App Deployment on EC2 using Docker
+2. **Connect to Your EC2 Instance**:
 
-This guide provides step-by-step commands to manually deploy a Streamlit app on an EC2 instance using Docker.
-
-Commands for Aws Cli after Launching EC2 Instance
-
-```
+```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
 
 sudo sh get-docker.sh
@@ -156,42 +153,26 @@ sudo usermod -aG docker ubuntu
 newgrp docker
 ```
 
-```
-![Git Secrets](demo/deploy_image1.gif)
+#### **GitHub Repo Secrets Setup**
 
+- `AWS_ACCESS_KEY_ID`=
+- `AWS_SECRET_ACCESS_KEY`=
+- `AWS_REGION`=
+- `AWS_ECR_LOGIN_URI`=
+- `ECR_REPOSITORY_NAME`=
+- `MONGO_DB_URL`=
 
-Github Repo Secrets Setup 
+#### **Run All GitHub Runner Commands in AWS CLI and Activate It**
 
-AWS_ACCESS_KEY_ID=
-
-AWS_SECRET_ACCESS_KEY=
-
-AWS_REGION=
-
-AWS_ECR_LOGIN_URI=
-
-ECR_REPOSITORY_NAME=
-
-MONGO_DB_URL=
-```
-
-Run All GitHub Runner Commands in AWS CLI and Activate It
+![Git Hub Runner Activation](demo/deploy_image1.gif)
 
 1. Set Up GitHub Actions Runner on EC2
-
-1. Navigate to Settings > Actions > Runners in your GitHub repository.
-2. Follow the instructions provided by GitHub to download and configure the runner on your EC2 instance.
-
----
-
-2. Download and Configure GitHub Actions Runner on EC2
-
-Run the following command to download the runner on your EC2 instance:
-
+2. Navigate to **Settings > Actions > Runners** in your GitHub repository.
+3. Follow the instructions provided by GitHub to download and configure the runner on your EC2 instance.
 
 ```bash
 curl -o actions-runner-linux-x64-<version>.tar.gz -L https://github.com/actions/runner/releases/download/v<version>/actions-runner-linux-x64-<version>.tar.gz
 tar xzf actions-runner-linux-x64-<version>.tar.gz
-
 ```
-![Git Hub Runner Ativation](demo/deploy_image2.gif)
+
+![Git Hub Runner Activation](demo/deploy_image2.gif)
