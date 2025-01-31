@@ -155,6 +155,8 @@ newgrp docker
 
 #### **GitHub Repo Secrets Setup**
 
+![Git Hub Secrets](demo/deploy_image1.gif)
+
 - `AWS_ACCESS_KEY_ID`=
 - `AWS_SECRET_ACCESS_KEY`=
 - `AWS_REGION`=
@@ -164,7 +166,7 @@ newgrp docker
 
 #### **Run All GitHub Runner Commands in AWS CLI and Activate It**
 
-![Git Hub Runner Activation](demo/deploy_image1.gif)
+![Git Hub Runner Activation](demo/deploy_image2.gif)
 
 1. Set Up GitHub Actions Runner on EC2
 2. Navigate to **Settings > Actions > Runners** in your GitHub repository.
@@ -175,4 +177,4 @@ curl -o actions-runner-linux-x64-<version>.tar.gz -L https://github.com/actions/
 tar xzf actions-runner-linux-x64-<version>.tar.gz
 ```
 
-![Git Hub Runner Activation](demo/deploy_image2.gif)
+

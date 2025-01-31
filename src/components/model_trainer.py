@@ -41,7 +41,7 @@ class ModelTrainer:
             random_search = RandomizedSearchCV(
                              estimator=model,
                              param_distributions=param_dist,
-                             n_iter=20,  # Number of parameter settings to try
+                             n_iter=400,  # Number of parameter settings to try
                              scoring='neg_mean_squared_error',  # Use appropriate metric
                              cv=3,  # Number of cross-validation folds
                              verbose=2,
@@ -72,7 +72,7 @@ class ModelTrainer:
             X_test , y_test=test_array[:,:-1] , test_array[:,-1]
 
             logging.info(f"Train the model")
-            model=RandomForestRegressor(max_depth=300 ,random_state=42)
+            model=RandomForestRegressor(max_depth=400 ,random_state=42)
             model.fit(X_train ,y_train)
             
             #best model after Performing  hyper-parameter tuning 
