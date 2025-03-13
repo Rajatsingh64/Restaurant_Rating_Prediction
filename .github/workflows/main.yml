@@ -110,7 +110,7 @@ jobs:
           export STREAMLIT_APP_PORT="${{ secrets.STREAMLIT_APP_PORT }}"  # Streamlit-specific
           
           # Run Docker Compose to start both Airflow and Streamlit services
-          docker compose up -d -f docker-compose.yml up -d
+          docker compose up -d 
 
       # Step 7: Clean up old Docker images to free space
       - name: Docker System Prune to Remove Old Images
