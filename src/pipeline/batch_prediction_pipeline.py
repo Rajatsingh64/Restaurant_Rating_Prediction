@@ -7,6 +7,8 @@ from src.utils import load_object
 import os,sys
 from datetime import datetime
 from src.config import ordinal_features , nominal_features , target_column
+import warnings 
+warnings.filterwarnings("ignore")
 
 PREDICTION_DIR="prediction"
 

@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
 import time
-import threading
 from src.utils import load_object
 from src.config import ordinal_features
-from src.pipeline.training_pipeline import initiate_training_pipeline
 from src.predictor import ModelResolver
 import warnings
 
@@ -50,26 +48,8 @@ try:
 except Exception as e:
     st.error(f"Error loading model, transformer, or encoder: {e}")
 
-# Training Flag and Thread Management
-training_in_progress = False
-training_thread = None
-start_time = None
-
-def run_training_pipeline():
-    global training_in_progress, start_time
-    try:
-        training_in_progress = True
-        start_time = time.time()
-        with st.spinner("Training pipeline is starting... Please wait."):
-            initiate_training_pipeline()
-            st.text("Training complete. Model, transformer, and encoder saved.")
-    except Exception as e:
-        st.error(f"Error occurred: {e}")
-    finally:
-        training_in_progress = False
-
-# Select Action: Training or Prediction
-action = st.sidebar.radio("Select Action", ("Run Training Pipeline", "Predict Rate"), index=1)  # Set default to 'Predict Rate'
+# Select Action: Prediction
+action = st.sidebar.radio("Select Action", ("Predict Rate",), index=0)  # Default to 'Predict Rate'
 
 # Feature Selection for Prediction
 if action == "Predict Rate":
@@ -159,7 +139,7 @@ if action == "Predict Rate":
                         # Final Prediction Display
                         animation_placeholder.markdown(
                             f"""
-                            <div style="text-align: center; color: red;">
+                            <div style="text-align: center; color: red margin-left: 30px;">
                                 <span style="font-size: 100px; font-weight: bold;">
                                     {rate}
                                 </span>
@@ -172,24 +152,6 @@ if action == "Predict Rate":
                     except Exception as e:
                         st.error(f"Prediction error: {e}")
 
-training_message="While Triggering Training Pipeline, system might be Crash During Deployment"
-# Training Pipeline Logic
-if action == "Run Training Pipeline":
-    st.write("Training Pipeline requires a good system specification.")
-    if not training_in_progress:
-        if st.button("Start Training"):
-            st.markdown(f'<p style="color: red; font-size: 18px; font-weight: bold; text-align: center;">{training_message}</p>', unsafe_allow_html=True)
-            training_thread = threading.Thread(target=run_training_pipeline, daemon=True)
-            training_thread.start()
-
-            # Real-time Timer Display
-            timer_placeholder = st.empty()
-            while training_in_progress:
-                elapsed_time = round(time.time() - start_time, 1)
-                timer_placeholder.markdown(f"**Training Time:** {elapsed_time}s")
-                time.sleep(0.1)
-
-        
 # Footer Section
 st.markdown(
     '<footer>© 2025 Rajat Singh | iNeuron.ai | All Rights Reserved</footer>',

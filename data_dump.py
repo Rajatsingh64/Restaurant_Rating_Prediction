@@ -5,9 +5,9 @@ import os ,sys
 database_name = "Zomato"
 collection_name="Restaurant"
 file_path=os.path.join(os.getcwd() ,"cleaned_zomato.csv") #cleaned dataset inside researcj.ipynb file
-##dataset link :-   https://www.kaggle.com/datasets/himanshupoddar/zomato-bangalore-restaurants
+##dataset link :- https://www.kaggle.com/datasets/himanshupoddar/zomato-bangalore-restaurants
 
-#creating  a funtion to dump dataset into mongodb database
+#creating a funtion to dump dataset into mongodb database
 
 if __name__=="__main__":
     

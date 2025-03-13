@@ -4,7 +4,7 @@ from src.exception import SrcException
 from src.logger import logging
 import os, sys
 
-file_path=os.path.join(os.getcwd() ,"dataset/cleaned_zomato.csv")
+file_path=os.path.join(os.getcwd() ,"cleaned_zomato.csv")
 
 if __name__=="__main__":
     try:

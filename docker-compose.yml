@@ -1,16 +1,39 @@
-version: "2"
+version: "3.8"
+
 services:
-  application:
+  # Airflow service
+  airflow:
     image: ${IMAGE_NAME}
-    container_name: rest-app
+    container_name: airflow
     ports:
       - "8080:8080"
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - MONGO_DB_URL=${MONGO_DB_URL}
-    restart: always  # Ensures automatic restart of the container if it stops
-    mem_limit: 2g  # Allocates a maximum of 2 GB of memory for the container
-    mem_reservation: 1g  # Reserves 1 GB of memory for the container to avoid connection loss
-    cpus: 1.0  # Limits CPU usage to 1 CPU core (you can adjust this value as needed)
+      - AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
+      - AIRFLOW_USERNAME=${AIRFLOW_USERNAME}
+      - AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
+    volumes:
+      - ./airflow:/app/airflow
+    restart: always
+    networks:
+      - airflow-streamlit
+
+  # Streamlit service
+  streamlit:
+    image: ${IMAGE_NAME}
+    container_name: streamlit
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_APP_PORT=${STREAMLIT_APP_PORT}
+    volumes:
+      - ./streamlit:/app/streamlit
+    restart: always
+    networks:
+      - airflow-streamlit
+
+networks:
+  airflow-streamlit:
+    driver: bridge

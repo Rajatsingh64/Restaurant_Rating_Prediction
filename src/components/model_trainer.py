@@ -73,12 +73,12 @@ class ModelTrainer:
 
             logging.info(f"Train the model")
             model=RandomForestRegressor(max_depth=400 ,random_state=42)
-            model.fit(X_train ,y_train)
+            #model.fit(X_train ,y_train)
             
             #best model after Performing  hyper-parameter tuning 
-            #model=self.model_tuning(model=model , X_train=X_train , y_train=y_train)
+            best_model=self.model_tuning(model=model , X_train=X_train , y_train=y_train)
             logging.info(f"Calculating r2 train score")
-            yhat_train=model.predict(X_train)
+            yhat_train=best_model.predict(X_train)
             r2_train_score=r2_score(y_train,yhat_train)
             
             logging.info(f"Calculating r2 test score")

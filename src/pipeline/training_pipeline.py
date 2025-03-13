@@ -8,6 +8,8 @@ from src.entity.config_entity import ModelEvaluationConfig  , ModelPusherConfig
 from src.components.model_evaluation import ModelEvaluation
 from src.exception import SrcException
 from src.logger import logging
+import warnings 
+warnings.filterwarnings("ignore")
 import os,sys
 
 def initiate_training_pipeline():
