@@ -1,53 +1,50 @@
-# Use official Python image
-FROM python:3.12
+FROM python:3.8
 
-# Declare build arguments
+# Declare build arguments for Airflow credentials
 ARG AIRFLOW_EMAIL
 ARG AIRFLOW_USERNAME
 ARG AIRFLOW_PASSWORD
 
 # Set environment variables from build arguments
-ENV AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
-ENV AIRFLOW_USERNAME=${AIRFLOW_USERNAME}
-ENV AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
+ENV AIRFLOW_EMAIL=${AIRFLOW_EMAIL} \
+    AIRFLOW_USERNAME=${AIRFLOW_USERNAME} \
+    AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
 
-# Set Airflow-specific environment variables
-ENV AIRFLOW_HOME="/app/airflow"
-ENV AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000
-ENV AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True
-
-# Set working directory
-WORKDIR /app
-
-# Copy all project files
+USER root
+RUN mkdir -p /app
 COPY . /app/
+WORKDIR /app/
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Install AWS CLI
-RUN apt update -y && apt install -y awscli supervisor
+# Set Airflow configuration environment variables
+ENV AIRFLOW_HOME="/app/airflow" \
+    AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000 \
+    AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True \
+    AIRFLOW__CORE__DAGS_FOLDER="/app/airflow/dags"
 
-# Allow script execution
-RUN chmod +x start.sh
-
-# Initialize Airflow database
+# Initialize the Airflow metadata database
 RUN airflow db init
 
-# Create Airflow user
+# (Optional) Check Airflow version
+RUN airflow version
+
+# Create an Airflow admin user
 RUN airflow users create \
     --email "${AIRFLOW_EMAIL}" \
     --first "Rajat" \
     --last "Singh" \
     --password "${AIRFLOW_PASSWORD}" \
     --role "Admin" \
-    --username "${AIRFLOW_USERNAME}" 
+    --username "${AIRFLOW_USERNAME}"
 
-# Expose necessary ports (Airflow UI & Streamlit)
-EXPOSE 8080 8501
+# Allow script execution for start.sh (ensure your file uses Unix line endings)
+RUN chmod +x start.sh
 
-# Copy supervisord configuration
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Install AWS CLI (if needed)
+RUN apt update -y && apt install -y awscli
 
-# Set entrypoint to supervisord
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Set the default entrypoint and command (overridden by docker-compose)
+ENTRYPOINT [ "/bin/sh" ]
+CMD ["start.sh"]

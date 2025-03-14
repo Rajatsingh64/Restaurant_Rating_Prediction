@@ -1,39 +1,42 @@
 version: "3.8"
 
 services:
-  # Airflow service
   airflow:
     image: ${IMAGE_NAME}
-    container_name: airflow
+    container_name: airflow_app
+    # Run the start.sh script to start both scheduler and webserver
+    command: /bin/sh start.sh
     ports:
       - "8080:8080"
     environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
-      - AIRFLOW_USERNAME=${AIRFLOW_USERNAME}
-      - AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      MONGO_DB_URL: ${MONGO_DB_URL}
+      BUCKET_NAME: ${BUCKET_NAME}
+      AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
+      AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
+      AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
     volumes:
-      - ./airflow:/app/airflow
+      - ./airflow/dags:/app/airflow/dags
+      - ./airflow/logs:/app/airflow/logs
     restart: always
-    networks:
-      - airflow-streamlit
 
-  # Streamlit service
   streamlit:
     image: ${IMAGE_NAME}
-    container_name: streamlit
+    container_name: streamlit_app
+    command: streamlit run /app/app.py --server.port=8501 --server.address=0.0.0.0
     ports:
       - "8501:8501"
     environment:
-      - STREAMLIT_APP_PORT=${STREAMLIT_APP_PORT}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      MONGO_DB_URL: ${MONGO_DB_URL}
+      BUCKET_NAME: ${BUCKET_NAME}
+      AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
+      AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
+      AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
     volumes:
-      - ./streamlit:/app/streamlit
+      - ./:/app
     restart: always
-    networks:
-      - airflow-streamlit
-
-networks:
-  airflow-streamlit:
-    driver: bridge
