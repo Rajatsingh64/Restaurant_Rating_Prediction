@@ -34,9 +34,6 @@ services:
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
       MONGO_DB_URL: ${MONGO_DB_URL}
       BUCKET_NAME: ${BUCKET_NAME}
-      AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
-      AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
-      AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
     volumes:
       - ./:/app
     restart: always
