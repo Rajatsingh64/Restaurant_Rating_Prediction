@@ -1,7 +1,0 @@
-[theme]
-base = "light"
-primaryColor = "#E60012"  # Zomato red
-backgroundColor = "#FFFFFF"  # White background
-secondaryBackgroundColor = "#FCECEC"  # Light reddish-white
-textColor = "#000000"  # Black text
-font = "sans serif"  # Use a clean font
