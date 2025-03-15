@@ -1,50 +1,27 @@
+# Use Python 3.12 as base image
 FROM python:3.12
 
-# Declare build arguments for Airflow credentials
-ARG AIRFLOW_EMAIL
-ARG AIRFLOW_USERNAME
-ARG AIRFLOW_PASSWORD
-
-# Set environment variables from build arguments
-ENV AIRFLOW_EMAIL=${AIRFLOW_EMAIL} \
-    AIRFLOW_USERNAME=${AIRFLOW_USERNAME} \
-    AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
-
 USER root
-RUN mkdir -p /app
+
+# Create application directory and copy files
+RUN mkdir /app
 COPY . /app/
 WORKDIR /app/
 
-# Install Python dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Update pip to the latest version
+RUN pip3 install --upgrade pip
 
-# Set Airflow configuration environment variables
+# Set environment variables for Airflow
 ENV AIRFLOW_HOME="/app/airflow" \
     AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000 \
     AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True \
     AIRFLOW__CORE__DAGS_FOLDER="/app/airflow/dags"
 
-# Initialize the Airflow metadata database
-RUN airflow db init
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# (Optional) Check Airflow version
-RUN airflow version
-
-# Create an Airflow admin user
-RUN airflow users create \
-    --email "${AIRFLOW_EMAIL}" \
-    --first "Rajat" \
-    --last "Singh" \
-    --password "${AIRFLOW_PASSWORD}" \
-    --role "Admin" \
-    --username "${AIRFLOW_USERNAME}"
-
-# Allow script execution for start.sh (ensure your file uses Unix line endings)
-RUN chmod +x start.sh
-
-# Install AWS CLI (if needed)
+# Install AWS CLI for S3 operations
 RUN apt update -y && apt install -y awscli
 
-# Set the default entrypoint and command (overridden by docker-compose)
-ENTRYPOINT [ "/bin/sh" ]
-CMD ["start.sh"]
+# Define a default command (to be overridden by docker-compose)
+CMD ["sh", "-c", "echo 'Container started, override CMD in docker-compose' && exec tail -f /dev/null"]

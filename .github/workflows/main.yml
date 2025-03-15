@@ -109,10 +109,7 @@ jobs:
           export AIRFLOW_EMAIL="${{ secrets.AIRFLOW_EMAIL }}"
           export AIRFLOW_USERNAME="${{ secrets.AIRFLOW_USERNAME }}"
           export AIRFLOW_PASSWORD="${{ secrets.AIRFLOW_PASSWORD }}"
-          export STREAMLIT_APP_PORT="${{ secrets.STREAMLIT_APP_PORT }}"  # Streamlit-specific
-          
-          # Run Docker Compose using the explicitly specified docker-compose.yaml file
-          docker compose -f docker-compose.yml up -d
+          docker compose up -d
 
       # Step 7: Clean up old Docker images to free space
       - name: Docker System Prune to Remove Old Images

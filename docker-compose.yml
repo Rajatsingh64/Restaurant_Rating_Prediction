@@ -1,39 +1,62 @@
-version: "3.8"
+version: "3.9"
 
 services:
   airflow:
-    image: ${IMAGE_NAME}
-    container_name: airflow_app
-    # Run the start.sh script to start both scheduler and webserver
-    command: /bin/sh start.sh
+    build: .
+    container_name: airflow_container
+    restart: always
     ports:
-      - "8080:8080"
+      - "8080:8080"  # Exposes the Airflow Web UI
+    env_file:
+      - .env         # Loads environment variables (for local testing)
     environment:
+      BUCKET_NAME: ${BUCKET_NAME}
+      MONGO_DB_URL: ${MONGO_DB_URL}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-      MONGO_DB_URL: ${MONGO_DB_URL}
-      BUCKET_NAME: ${BUCKET_NAME}
+      AWS_DEFAULT_REGION: ${AWS_REGION}
       AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
       AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
+      # Tell Airflow to use PostgreSQL (not the default SQLite)
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
     volumes:
-      - ./airflow/dags:/app/airflow/dags
-      - ./airflow/logs:/app/airflow/logs
-    restart: always
-
+      - ./airflow/dags:/app/airflow/dags  # Mount your local DAGs directory
+    depends_on:
+      - postgres
+    command: ["sh", "-c", "./start.sh"]
+   
   streamlit:
-    image: ${IMAGE_NAME}
-    container_name: streamlit_app
-    command: streamlit run /app/app.py --server.port=8501 --server.address=0.0.0.0
+    build: .
+    container_name: streamlit_container
+    restart: always
     ports:
-      - "8501:8501"
+      - "8501:8501"  # Exposes the Streamlit app
+    env_file:
+      - .env
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-      MONGO_DB_URL: ${MONGO_DB_URL}
+      AWS_DEFAULT_REGION: ${AWS_REGION}
       BUCKET_NAME: ${BUCKET_NAME}
-    volumes:
-      - ./:/app
+    depends_on:
+      - airflow
+    command: >
+      sh -c "streamlit run app.py --server.port 8501 --server.enableCORS false &&
+      exec tail -f /dev/null"
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
     restart: always
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
