@@ -16,7 +16,7 @@ jobs:
     steps:
       # Checkout the code from GitHub repository
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Install necessary utilities like jq and unzip
       - name: Install Utilities
@@ -60,7 +60,7 @@ jobs:
     steps:
       # Checkout the code again (if needed for further steps)
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       # Configure AWS credentials again for deployment
       - name: Configure AWS credentials
