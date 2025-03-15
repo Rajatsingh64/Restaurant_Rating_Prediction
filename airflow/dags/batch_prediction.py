@@ -13,7 +13,7 @@ with DAG(
     default_args=default_args,
     description='Restaurant Rating Prediction',
     schedule_interval="@weekly",
-    start_date=pendulum.datetime(2025, 3, 14, tz="UTC"),
+    start_date=pendulum.datetime(2025, 3, 15, tz="UTC"),
     catchup=False,
     tags=['example'],
 ) as dag:
