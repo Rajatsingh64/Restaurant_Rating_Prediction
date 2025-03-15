@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   airflow:
-    image: ${IMAGE_NAME}  # Pulls the prebuilt image from the registry (or build locally if desired)
+    image: ${IMAGE_NAME}  # Uses the prebuilt image from the registry
     container_name: airflow_container
     restart: always
     ports:
@@ -17,9 +17,9 @@ services:
       AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
     command: ["sh", "-c", "./start.sh"]
-   
+
   streamlit:
-    image: ${IMAGE_NAME}  # Pulls the prebuilt image from the registry (or build locally if desired)
+    image: ${IMAGE_NAME}  # Uses the same prebuilt image (if both services share common dependencies)
     container_name: streamlit_container
     restart: always
     ports:
@@ -33,4 +33,4 @@ services:
       - airflow
     command: >
       sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false &&
-      exec tail -f /dev/null"
+             exec tail -f /dev/null"

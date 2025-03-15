@@ -14,14 +14,17 @@ jobs:
     name: Continuous Delivery
     runs-on: ubuntu-latest
     steps:
+      # Checkout the code from GitHub repository
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Install necessary utilities like jq and unzip
       - name: Install Utilities
         run: |
           sudo apt-get update
           sudo apt-get install -y jq unzip
 
+      # Configure AWS credentials using GitHub Secrets
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -29,10 +32,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # Login to Amazon ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      # Build, tag, and push image to Amazon ECR
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
@@ -40,6 +45,7 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
         run: |
+          set -e
           docker build \
             --build-arg AIRFLOW_EMAIL=${{ secrets.AIRFLOW_EMAIL }} \
             --build-arg AIRFLOW_USERNAME=${{ secrets.AIRFLOW_USERNAME }} \
@@ -53,15 +59,19 @@ jobs:
     needs: build-and-push-ecr-image
     runs-on: self-hosted
     steps:
+      # Clean up the workspace to prevent leftover permission issues
       - name: Clean workspace
         run: sudo rm -rf $GITHUB_WORKSPACE/*
 
+      # Fix file permissions recursively in the workspace
       - name: Fix file permissions
         run: sudo chmod -R 777 $GITHUB_WORKSPACE
 
+      # Checkout Code for deployment
       - name: Checkout Code
         uses: actions/checkout@v4
       
+      # Reconfigure AWS credentials for deployment
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -69,18 +79,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
   
+      # Install utilities on the self-hosted runner (if not already installed)
       - name: Install Utilities
         run: |
           sudo apt-get update
           sudo apt-get install -y jq unzip
   
+      # Login to Amazon ECR to pull the Docker image
       - name: Login to Amazon ECR
-        id: login-ecr
+        id: login-ecr-deploy
         uses: aws-actions/amazon-ecr-login@v1
     
+      # Pull the Docker image from ECR
       - name: Pull Docker image from ECR
         run: docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
+      # Set environment variables and run Docker Compose
       - name: Set Airflow Secrets and Run Docker Image
         run: |
           set -e
@@ -95,5 +109,6 @@ jobs:
           export AIRFLOW_PASSWORD="${{ secrets.AIRFLOW_PASSWORD }}"
           docker compose up -d
 
+      # Clean up unused Docker images to prevent accumulation
       - name: Docker System Prune to Remove Old Images
         run: docker system prune -f
