@@ -43,7 +43,7 @@ def sync_models():
         return False
 
     st.info("Syncing latest model files from S3...")
-    sync_command = ["aws", "s3", "sync", f"s3://{bucket_name}/models", "/app/models"]
+    sync_command = ["aws", "s3", "sync", f"s3://{bucket_name}/saved_models", "/app/saved_models"]
     
     try:
         # subprocess.run returns a CompletedProcess object
