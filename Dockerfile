@@ -23,5 +23,8 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # Install AWS CLI for S3 operations
 RUN apt update -y && apt install -y awscli
 
+# Ensure start.sh is executable
+RUN chmod +x start.sh
+
 # Define a default command (to be overridden by docker-compose)
 CMD ["sh", "-c", "echo 'Container started, override CMD in docker-compose' && exec tail -f /dev/null"]

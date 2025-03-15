@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   airflow:
-    image: ${IMAGE_NAME}  # Pulls the prebuilt image from the registry
+    image: ${IMAGE_NAME}  # Pulls the prebuilt image from the registry (or build locally if desired)
     container_name: airflow_container
     restart: always
     ports:
@@ -24,11 +24,11 @@ services:
     command: ["sh", "-c", "./start.sh"]
    
   streamlit:
-    image: ${IMAGE_NAME}  # Pulls the prebuilt image from the registry
+    image: ${IMAGE_NAME}  # Pulls the prebuilt image from the registry (or build locally if desired)
     container_name: streamlit_container
     restart: always
     ports:
-      - "8501:8501"
+      - "8501:8501"  # Exposes the Streamlit app
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
@@ -37,7 +37,7 @@ services:
     depends_on:
       - airflow
     command: >
-      sh -c "streamlit run app.py --server.port 8501 --server.enableCORS false &&
+      sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false &&
       exec tail -f /dev/null"
 
   postgres:
@@ -52,6 +52,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:

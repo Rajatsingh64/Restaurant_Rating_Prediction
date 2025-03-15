@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# No need to load .env when using GitHub Secrets
 # Initialize Airflow database
 airflow db init
 
