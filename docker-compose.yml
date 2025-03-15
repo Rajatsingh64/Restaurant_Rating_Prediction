@@ -17,8 +17,6 @@ services:
       AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-    volumes:
-      - ./airflow/dags:/app/airflow/dags
     depends_on:
       - postgres
     command: ["sh", "-c", "./start.sh"]
