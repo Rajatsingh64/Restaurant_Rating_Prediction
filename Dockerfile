@@ -11,11 +11,11 @@ WORKDIR /app/
 # Update pip to the latest version
 RUN pip3 install --upgrade pip
 
-# Set environment variables for Airflow
-ENV AIRFLOW_HOME="/app/airflow" \
-    AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000 \
-    AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True \
-    AIRFLOW__CORE__DAGS_FOLDER="/app/airflow/dags"
+# Set Airflow configuration environment variables
+ENV AIRFLOW_HOME="/app/airflow"
+ENV AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000
+ENV AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True
+    
 
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt

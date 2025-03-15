@@ -167,4 +167,6 @@ prediction/
 dataset/
 saved_models/
 test.py
+**/__pycache__/
+*.pyc
 

@@ -18,3 +18,5 @@ about_app.pdf
 demo
 dataset
 test.py
+**/__pycache__/
+*.pyc
