@@ -9,7 +9,7 @@ default_args = {
 }
 
 with DAG(
-    'Restaurant_Rating_Prediction',
+    'Restaurant_Rating',
     default_args=default_args,
     description='Restaurant Rating Prediction',
     schedule_interval="@weekly",
