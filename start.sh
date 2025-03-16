@@ -12,15 +12,14 @@ else
 fi
 
 # Ensure the Airflow logs directory exists and fix permissions.
-# This creates the scheduler log directory and sets ownership so Airflow can write logs.
 mkdir -p /opt/airflow/logs/scheduler
 chown -R airflow:airflow /opt/airflow/logs
 
+# Wait for Postgres to be fully ready (increase if needed)
+sleep 30
+
 # Initialize Airflow database
 airflow db init
-
-# Wait for the database to be fully ready
-sleep 10
 
 # Create an Airflow admin user if not already present
 if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then

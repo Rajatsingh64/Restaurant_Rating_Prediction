@@ -13,21 +13,25 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   airflow:
     image: apache/airflow:2.9.0-python3.9
     container_name: airflow_container
     restart: always
-    user: root  # Run as root so we can fix permissions on mounted logs folder
+    user: root  # Running as root for permissions; adjust for production.
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
-      # Airflow executor and DB configuration
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      # Custom environment variables
       AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
       AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
