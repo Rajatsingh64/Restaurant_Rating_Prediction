@@ -1,36 +1,66 @@
 version: "3.9"
 
 services:
+  postgres:
+    image: postgres:13
+    container_name: postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   airflow:
-    image: ${IMAGE_NAME}  # Uses the prebuilt image from the registry
+    image: apache/airflow:2.9.0-python3.9
     container_name: airflow_container
     restart: always
+    depends_on:
+      - postgres
     ports:
-      - "8080:8080"  # Exposes the Airflow Web UI
+      - "8080:8080"
     environment:
+      # Airflow executor and DB configuration
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      # Your custom environment variables
+      AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
+      AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
+      AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       BUCKET_NAME: ${BUCKET_NAME}
       MONGO_DB_URL: ${MONGO_DB_URL}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
-      AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
-      AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
-      AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
     command: ["sh", "-c", "./start.sh"]
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+          cpus: '1.5'
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
 
   streamlit:
-    image: ${IMAGE_NAME}  # Uses the same prebuilt image (if both services share common dependencies)
+    image: ${IMAGE_NAME}
     container_name: streamlit_container
     restart: always
+    depends_on:
+      - airflow
     ports:
-      - "8501:8501"  # Exposes the Streamlit app
+      - "8501:8501"
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_DEFAULT_REGION: ${AWS_REGION}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
       BUCKET_NAME: ${BUCKET_NAME}
-    depends_on:
-      - airflow
     command: >
-      sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false &&
-             exec tail -f /dev/null"
+      sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false && exec tail -f /dev/null"
+
+volumes:
+  postgres_data:
