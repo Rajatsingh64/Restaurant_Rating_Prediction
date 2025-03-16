@@ -18,6 +18,8 @@ services:
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
+    volumes:
+      - airflow_logs:/app/airflow/log
     depends_on:
       - postgres
     command: ["sh", "-c", "./start.sh"]
@@ -34,6 +36,8 @@ services:
       AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
     depends_on:
       - postgres
+    volumes:
+      - airflow_logs:/app/airflow/log
     command: >
       sh -c "airflow db upgrade &&
       airflow scheduler"
@@ -75,3 +79,4 @@ services:
 
 volumes:
   postgres_data:
+  airflow_logs:
