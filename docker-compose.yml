@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-  airflow:
-    image: ${IMAGE_NAME}  # Pulls prebuilt image from registry
-    container_name: airflow_container
+  airflow-webserver:
+    image: ${IMAGE_NAME} 
+    container_name: airflow_webserver
     restart: always
     ports:
       - "8080:8080"
@@ -17,9 +17,26 @@ services:
       AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
     depends_on:
       - postgres
     command: ["sh", "-c", "./start.sh"]
+
+  airflow-scheduler:
+    image: ${IMAGE_NAME}
+    container_name: airflow_scheduler
+    restart: always
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_REGION}
+      AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
+    depends_on:
+      - postgres
+    command: >
+      sh -c "airflow db upgrade &&
+      airflow scheduler"
 
   streamlit:
     image: ${IMAGE_NAME}
@@ -33,7 +50,7 @@ services:
       AWS_DEFAULT_REGION: ${AWS_REGION}
       BUCKET_NAME: ${BUCKET_NAME}
     depends_on:
-      - airflow
+      - airflow-webserver
     command: >
       sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false &&
       exec tail -f /dev/null"

@@ -1,32 +1,30 @@
-  #!/bin/sh
+#!/bin/sh
 
-  # (Optional) Sync saved models from S3 if you need them.
-  # Remove or comment out if not required.
-  if [ -n "$BUCKET_NAME" ]; then
-    echo "Syncing saved models from S3..."
-    mkdir -p /app/saved_models
-    aws s3 sync s3://$BUCKET_NAME/saved_models /app/saved_models
-    echo "Saved models sync complete."
-  else
-    echo "BUCKET_NAME is not set. Skipping saved models sync."
-  fi
+# (Optional) Sync saved models from S3 if needed.
+if [ -n "$BUCKET_NAME" ]; then
+  echo "Syncing saved models from S3..."
+  mkdir -p /app/saved_models
+  aws s3 sync s3://$BUCKET_NAME/saved_models /app/saved_models
+  echo "Saved models sync complete."
+else
+  echo "BUCKET_NAME is not set. Skipping saved models sync."
+fi
 
-  # Wait a little to ensure Postgres is ready
-  sleep 30
+# Wait to ensure Postgres is ready
+sleep 30
 
-  # Initialize Airflow database
-  airflow db init
+# Initialize Airflow DB
+airflow db upgrade
 
-  # Create an Airflow admin user if not already present
-  if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then
-      airflow users create --email "$AIRFLOW_EMAIL" --firstname "Admin" --lastname "User" --password "$AIRFLOW_PASSWORD" --role "Admin" --username "$AIRFLOW_USERNAME"
-  fi
+# Create Airflow admin user (idempotent)
+if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then
+  airflow users create \
+    --email "$AIRFLOW_EMAIL" \
+    --firstname "Admin" --lastname "User" \
+    --password "$AIRFLOW_PASSWORD" \
+    --role "Admin" \
+    --username "$AIRFLOW_USERNAME"
+fi
 
-# Start scheduler first
-nohup airflow scheduler  &
-
-# Start webserver after (on port 8080)
-airflow webserver -p 8080 &
-
-  # Keep container running
-  exec tail -f /dev/null
+# Start webserver on port 8080
+airflow webserver -p 8080
