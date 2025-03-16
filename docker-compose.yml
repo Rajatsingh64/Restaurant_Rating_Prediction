@@ -18,7 +18,7 @@ services:
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
     volumes:
-      - dags_volume:/app/airflow/dags  # Use named volume instead of host bind mount
+      - ./dags:/app/airflow/dags  # Use named volume instead of host bind mount
     depends_on:
       - postgres
     command: ["sh", "-c", "./start.sh"]
