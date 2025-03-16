@@ -11,6 +11,10 @@ else
   echo "BUCKET_NAME is not set. Skipping saved models sync."
 fi
 
+# Ensure the Airflow logs directory exists and set proper permissions
+mkdir -p /opt/airflow/logs/scheduler
+chown -R airflow:airflow /opt/airflow/logs
+
 # Initialize Airflow database
 airflow db init
 

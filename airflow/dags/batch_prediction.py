@@ -11,7 +11,7 @@ with DAG(
     'Restaurant_Rating',
     default_args={'retries': 2},
     # [END default_args]
-    description='Sensor Fault Detection',
+    description='Restaurant Rating Prediction',
     schedule_interval="@weekly",
     start_date=pendulum.datetime(2025, 3, 16, tz="UTC"),
     catchup=False,
