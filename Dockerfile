@@ -1,30 +1,32 @@
 # Use Python 3.12 as base image
-FROM python:3.12
+FROM python:3.12-slim
 
 USER root
 
-# Create application directory and copy files
-RUN mkdir /app
+# Create application directory and set working directory
+RUN mkdir -p /app/airflow
+WORKDIR /app
+
+# Copy project files and DAGs
 COPY . /app/
-WORKDIR /app/
+COPY ./dags /app/airflow/dags
 
-# Update pip to the latest version
+# Upgrade pip
 RUN pip3 install --upgrade pip
-
-# Set Airflow configuration environment variables
-ENV AIRFLOW_HOME="/app/airflow"
-ENV AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000
-ENV AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True
-    
 
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Install AWS CLI for S3 operations
+# Install AWS CLI
 RUN apt update -y && apt install -y awscli
 
-# Ensure start.sh is executable
+# Set Airflow configuration environment variables
+ENV AIRFLOW_HOME=/app/airflow
+ENV AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000
+ENV AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True
+
+# Make start.sh executable
 RUN chmod +x start.sh
 
-# Define a default command (to be overridden by docker-compose)
-CMD ["sh", "-c", "echo 'Container started, override CMD in docker-compose' && exec tail -f /dev/null"]
+# Default command (can be overridden)
+CMD ["sh", "-c", "echo 'Airflow container running. Use docker-compose commands.' && tail -f /dev/null"]
