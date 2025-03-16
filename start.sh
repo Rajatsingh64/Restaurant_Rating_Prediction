@@ -23,7 +23,7 @@
   fi
 
 # Start scheduler first
-airflow scheduler &
+nohup airflow scheduler  &
 
 # Start webserver after (on port 8080)
 airflow webserver -p 8080 &
