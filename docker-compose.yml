@@ -2,7 +2,7 @@ version: "3"
 
 services:
   airflow-webserver:
-    image: ${IMAGE_NAME} 
+    image: ${IMAGE_NAME}
     container_name: airflow_webserver
     restart: always
     ports:
@@ -18,8 +18,13 @@ services:
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
+      AIRFLOW__WEBSERVER__SECRET_KEY: super_secret_key_123
+      AIRFLOW__CORE__BASE_LOG_FOLDER: /app/airflow/logs
+      AIRFLOW__CORE__LOGGING_LEVEL: INFO
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      TZ: UTC
     volumes:
-      - airflow_logs:/app/airflow/log
+      - airflow_logs:/app/airflow/logs
     depends_on:
       - postgres
     command: ["sh", "-c", "./start.sh"]
@@ -34,10 +39,15 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
       AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
+      AIRFLOW__WEBSERVER__SECRET_KEY: super_secret_key_123
+      AIRFLOW__CORE__BASE_LOG_FOLDER: /app/airflow/logs
+      AIRFLOW__CORE__LOGGING_LEVEL: INFO
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      TZ: UTC
     depends_on:
       - postgres
     volumes:
-      - airflow_logs:/app/airflow/log
+      - airflow_logs:/app/airflow/logs
     command: >
       sh -c "airflow db upgrade &&
       airflow scheduler"
