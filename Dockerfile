@@ -34,4 +34,4 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod +x start.sh
 
 # Default command to start Airflow using Supervisor
-CMD ["sh", "./start.sh"]
+ENTRYPOINT ["sh", "./start.sh"]
