@@ -1,45 +1,63 @@
-version: "3.9"
+version: "3"
 
 services:
+  airflow:
+    image: ${IMAGE_NAME}  # Pulls prebuilt image from registry
+    container_name: airflow_container
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      BUCKET_NAME: ${BUCKET_NAME}
+      MONGO_DB_URL: ${MONGO_DB_URL}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_REGION}
+      AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
+      AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
+      AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+    volumes:
+      - dags_volume:/app/airflow/dags  # Use named volume instead of host bind mount
+    depends_on:
+      - postgres
+    command: ["sh", "-c", "./start.sh"]
+
+  streamlit:
+    image: ${IMAGE_NAME}
+    container_name: streamlit_container
+    restart: always
+    ports:
+      - "8501:8501"
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_REGION}
+      BUCKET_NAME: ${BUCKET_NAME}
+    depends_on:
+      - airflow
+    command: >
+      sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false &&
+      exec tail -f /dev/null"
+
   postgres:
-    image: postgres:13
-    container_name: postgres_container
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  airflow:
-    image: apache/airflow:2.9.0-python3.9
-    container_name: airflow_container
-    depends_on:
-      - postgres
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
-      AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
-      AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
-      BUCKET_NAME: ${BUCKET_NAME}
-      MONGO_DB_URL: ${MONGO_DB_URL}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_DEFAULT_REGION: ${AWS_REGION}
-    command: ["sh", "-c", "./start.sh"]
-
-  streamlit:
-    image: ${IMAGE_NAME}
-    container_name: streamlit_container
-    depends_on:
-      - airflow
-    ports:
-      - "8501:8501"
-    environment:
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-      BUCKET_NAME: ${BUCKET_NAME}
-    command: >
-      sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false && exec tail -f /dev/null"
+volumes:
+  dags_volume:   # Named volume for DAGs
+  postgres_data:
