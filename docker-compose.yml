@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-  airflow-webserver:
-    image: ${IMAGE_NAME}
-    container_name: airflow_webserver
+  airflow:
+    image: ${IMAGE_NAME}  # Pulls prebuilt image from registry
+    container_name: airflow_container
     restart: always
     ports:
       - "8080:8080"
@@ -17,42 +17,9 @@ services:
       AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
-      AIRFLOW__WEBSERVER__SECRET_KEY: super_secret_key_123
-      AIRFLOW__CORE__BASE_LOG_FOLDER: /app/airflow/logs
-      AIRFLOW__CORE__LOGGING_LEVEL: INFO
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
-      TZ: UTC
-    volumes:
-      - airflow_logs:/app/airflow/logs
     depends_on:
       - postgres
     command: ["sh", "-c", "./start.sh"]
-
-  airflow-scheduler:
-    image: ${IMAGE_NAME}
-    container_name: airflow_scheduler
-    restart: always
-    environment:
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      MONGO_DB_URL: ${MONGO_DB_URL}
-      BUCKET_NAME: ${BUCKET_NAME}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_DEFAULT_REGION: ${AWS_REGION}
-      AIRFLOW__SCHEDULER__ALLOW_MULTIPLE_SCHEDULERS: "False"
-      AIRFLOW__WEBSERVER__SECRET_KEY: super_secret_key_123
-      AIRFLOW__CORE__BASE_LOG_FOLDER: /app/airflow/logs
-      AIRFLOW__CORE__LOGGING_LEVEL: INFO
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
-      TZ: UTC
-    depends_on:
-      - postgres
-    volumes:
-      - airflow_logs:/app/airflow/logs
-    command: >
-      sh -c "airflow db upgrade &&
-      airflow scheduler"
 
   streamlit:
     image: ${IMAGE_NAME}
@@ -66,7 +33,7 @@ services:
       AWS_DEFAULT_REGION: ${AWS_REGION}
       BUCKET_NAME: ${BUCKET_NAME}
     depends_on:
-      - airflow-webserver
+      - airflow
     command: >
       sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false &&
       exec tail -f /dev/null"
@@ -78,7 +45,7 @@ services:
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow 
+      POSTGRES_DB: airflow
     ports:
       - "5432:5432"
     volumes:
@@ -91,4 +58,3 @@ services:
 
 volumes:
   postgres_data:
-  airflow_logs:
