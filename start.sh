@@ -1,29 +1,25 @@
 #!/bin/sh
 
-# Sync saved models from S3 for prediction if BUCKET_NAME is set
+# (Optional) Sync saved models from S3 if you need them.
+# Remove or comment out if not required.
 if [ -n "$BUCKET_NAME" ]; then
   echo "Syncing saved models from S3..."
   mkdir -p /app/saved_models
   aws s3 sync s3://$BUCKET_NAME/saved_models /app/saved_models
-  echo "Saved models sync complete. Listing contents:"
-  ls -la /app/saved_models
+  echo "Saved models sync complete."
 else
   echo "BUCKET_NAME is not set. Skipping saved models sync."
 fi
 
-# Ensure the Airflow logs directory exists and fix permissions.
-mkdir -p /opt/airflow/logs/scheduler
-chown -R airflow:airflow /opt/airflow/logs
-
-# Wait for Postgres to be fully ready (increase if needed)
-sleep 30
+# Wait a little to ensure Postgres is ready
+sleep 15
 
 # Initialize Airflow database
 airflow db init
 
 # Create an Airflow admin user if not already present
 if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then
-    airflow users create --email "$AIRFLOW_EMAIL" --firstname "Rajat" --lastname "Singh" --password "$AIRFLOW_PASSWORD" --role "Admin" --username "$AIRFLOW_USERNAME"
+    airflow users create --email "$AIRFLOW_EMAIL" --firstname "Admin" --lastname "User" --password "$AIRFLOW_PASSWORD" --role "Admin" --username "$AIRFLOW_USERNAME"
 fi
 
 # Start Airflow webserver and scheduler in the background
