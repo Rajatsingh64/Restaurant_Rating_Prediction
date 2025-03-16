@@ -9,7 +9,6 @@ WORKDIR /app
 
 # Copy project files and DAGs
 COPY . /app/
-COPY ./dags /app/airflow/dags
 
 # Upgrade pip
 RUN pip3 install --upgrade pip
