@@ -39,7 +39,6 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
     volumes:
-      - ./dags:/app/dags
       - ./logs:/app/airflow/logs
     command: ["sh", "-c", "./start.sh"]
 
