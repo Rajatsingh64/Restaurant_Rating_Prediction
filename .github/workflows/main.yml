@@ -94,10 +94,6 @@ jobs:
       - name: Pull Docker image from ECR
         run: docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      # Stop running containers (so old DAGs aren't cached)
-      - name: Stop Running Containers
-        run: docker compose down
-
       # Set environment variables and run Docker Compose
       - name: Set Airflow Secrets and Run Docker Image
         run: |
