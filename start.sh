@@ -12,7 +12,7 @@ else
 fi
 
 # Wait a little to ensure Postgres is ready
-sleep 15
+sleep 30
 
 # Initialize Airflow database
 airflow db init

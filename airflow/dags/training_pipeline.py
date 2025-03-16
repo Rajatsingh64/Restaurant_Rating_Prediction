@@ -8,7 +8,7 @@ from airflow.operators.python import PythonOperator
 
 
 with DAG(
-    'Restaurant_Rating',
+    'Restaurant_Rating_Batch_Prediction',
     default_args={'retries': 2},
     # [END default_args]
     description='Restaurant Rating Prediction',
