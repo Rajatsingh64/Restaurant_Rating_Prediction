@@ -11,7 +11,8 @@ else
   echo "BUCKET_NAME is not set. Skipping saved models sync."
 fi
 
-# Ensure the Airflow logs directory exists and set proper permissions
+# Ensure the Airflow logs directory exists and fix permissions.
+# This creates the scheduler log directory and sets ownership so Airflow can write logs.
 mkdir -p /opt/airflow/logs/scheduler
 chown -R airflow:airflow /opt/airflow/logs
 

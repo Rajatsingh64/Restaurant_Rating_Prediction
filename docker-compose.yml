@@ -18,6 +18,7 @@ services:
     image: apache/airflow:2.9.0-python3.9
     container_name: airflow_container
     restart: always
+    user: root  # Run as root so we can fix permissions on mounted logs folder
     depends_on:
       - postgres
     ports:
@@ -26,7 +27,7 @@ services:
       # Airflow executor and DB configuration
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      # Your custom environment variables
+      # Custom environment variables
       AIRFLOW_EMAIL: ${AIRFLOW_EMAIL}
       AIRFLOW_USERNAME: ${AIRFLOW_USERNAME}
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
