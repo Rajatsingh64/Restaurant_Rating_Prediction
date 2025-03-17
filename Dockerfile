@@ -25,12 +25,8 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # Create logs directory
 RUN mkdir -p /app/airflow/logs
 
-# Copy Supervisor configuration
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 # Make start script executable
 RUN chmod +x start.sh
 
 # Set entrypoint to start Airflow
-ENTRYPOINT [ "/bin/sh" ]
-CMD ["start.sh"]
+ENTRYPOINT ["start.sh"]
