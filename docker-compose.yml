@@ -20,14 +20,16 @@ services:
       retries: 5
 
   airflow:
-    image: ${IMAGE_NAME}  # <-- Pulls your custom Airflow image from ECR
+    image: ${IMAGE_NAME}  # Your ECR image
     container_name: airflow_container
     restart: always
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
+      AIRFLOW__CORE__EXECUTOR: KubernetesExecutor
       BUCKET_NAME: ${BUCKET_NAME}
       MONGO_DB_URL: ${MONGO_DB_URL}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
@@ -38,12 +40,28 @@ services:
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      # Stability & performance tuning
+      AIRFLOW__SCHEDULER__SCHEDULER_HEARTBEAT_SEC: "15"
+      AIRFLOW__CORE__STORE_SERIALIZED_DAGS: "True"
+      AIRFLOW__SCHEDULER__SCHEDULER_HEALTH_CHECK_THRESHOLD: "300"
+      AIRFLOW__SCHEDULER__SCHEDULER_ZOMBIE_TASK_THRESHOLD: "600"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_POOL_SIZE: "50"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_MAX_OVERFLOW: "50"
+     
     volumes:
       - ./logs:/app/airflow/logs
     command: ["sh", "-c", "./start.sh"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
 
   streamlit:
-    image: ${IMAGE_NAME}   # <-- Same ECR image used
+    image: ${IMAGE_NAME}
     container_name: streamlit_container
     restart: always
     ports:

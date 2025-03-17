@@ -10,8 +10,11 @@ else
   echo "BUCKET_NAME is not set. Skipping saved models sync."
 fi
 
-# Initialize Airflow database
-airflow db init
+# Migrate Airflow database (replacement for deprecated db init)
+airflow db migrate
+
+# Create default connections (optional, depending on your needs)
+airflow connections create-default-connections
 
 # Create Airflow admin user if not exists
 if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then

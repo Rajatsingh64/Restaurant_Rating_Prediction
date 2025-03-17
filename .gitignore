@@ -169,4 +169,5 @@ saved_models/
 test.py
 **/__pycache__/
 *.pyc
-
+local-host.pem
+local-host.pem.pub
