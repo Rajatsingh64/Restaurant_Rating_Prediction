@@ -51,15 +51,12 @@ services:
     volumes:
       - ./logs:/app/airflow/logs
     command: ["sh", "-c", "./start.sh"]
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 4G
-        reservations:
-          cpus: '1.0'
-          memory: 2G
-
+    healthcheck:
+      test: ["CMD", "airflow", "jobs", "check", "--job-type", "SchedulerJob", "--hostname", "$(hostname)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    
   streamlit:
     image: ${IMAGE_NAME}
     container_name: streamlit_container

@@ -1,25 +1,26 @@
 #!/bin/sh
+set -e
 
-# Sync saved models from S3 if BUCKET_NAME is set
+echo "Starting S3 sync (if BUCKET_NAME is set)..."
 if [ -n "$BUCKET_NAME" ]; then
-  echo "Syncing saved models from S3..."
   mkdir -p /app/saved_models
   aws s3 sync s3://$BUCKET_NAME/saved_models /app/saved_models
   echo "Saved models sync complete."
 else
-  echo "BUCKET_NAME is not set. Skipping saved models sync."
+  echo "BUCKET_NAME is not set. Skipping S3 sync."
 fi
 
-# Migrate Airflow database (replacement for deprecated db init)
-airflow db migrate
+echo "Initializing Airflow DB..."
+airflow db init
+echo "DB Initialized."
 
-# Create default connections (optional, depending on your needs)
-airflow connections create-default-connections
-
-# Create Airflow admin user if not exists
+echo "Ensuring Airflow Admin user exists..."
 if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then
     airflow users create --email "$AIRFLOW_EMAIL" --firstname "Admin" --lastname "User" --password "$AIRFLOW_PASSWORD" --role "Admin" --username "$AIRFLOW_USERNAME"
+    echo "Admin user created."
+else
+    echo "Admin user already exists."
 fi
 
-# Start supervisord (which handles webserver + scheduler)
+echo "Starting supervisord (webserver + scheduler)..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
