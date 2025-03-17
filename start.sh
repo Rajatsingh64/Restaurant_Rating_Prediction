@@ -29,23 +29,6 @@ if [ "$1" = "airflow" ]; then
     echo "Admin user exists."
   fi
 
-  echo "Cleaning up any stale PID files..."
-  rm -f /root/airflow-webserver.pid || true
-
-  ### 🔥 Extra: Clear Running DAGs
-  echo "Checking for running DAGs and clearing them..."
-  RUNNING_DAGS=$(airflow dags list-runs --state running -o json | jq -r '.[].dag_id' | sort -u)
-
-  if [ -z "$RUNNING_DAGS" ]; then
-    echo "No running DAGs found."
-  else
-    for DAG_ID in $RUNNING_DAGS; do
-      echo "Clearing running DAG: $DAG_ID"
-      airflow dags clear -y --dag-id "$DAG_ID"
-    done
-    echo "All active DAGs cleared."
-  fi
-
   echo "Starting Supervisor for Airflow Scheduler & Webserver..."
   exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
 
