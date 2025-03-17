@@ -20,7 +20,7 @@ services:
       retries: 5
 
   airflow:
-    image: ${IMAGE_NAME}  # Your ECR image
+    image: ${IMAGE_NAME}
     container_name: airflow_container
     restart: always
     depends_on:
@@ -40,23 +40,16 @@ services:
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      # Stability & performance tuning
-      AIRFLOW__SCHEDULER__SCHEDULER_HEARTBEAT_SEC: "15"
+      AIRFLOW__SCHEDULER__SCHEDULER_HEARTBEAT_SEC: "10"
       AIRFLOW__CORE__STORE_SERIALIZED_DAGS: "True"
-      AIRFLOW__SCHEDULER__SCHEDULER_HEALTH_CHECK_THRESHOLD: "300"
+      AIRFLOW__SCHEDULER__SCHEDULER_HEALTH_CHECK_THRESHOLD: "100"
       AIRFLOW__SCHEDULER__SCHEDULER_ZOMBIE_TASK_THRESHOLD: "600"
       AIRFLOW__DATABASE__SQL_ALCHEMY_POOL_SIZE: "50"
       AIRFLOW__DATABASE__SQL_ALCHEMY_MAX_OVERFLOW: "50"
-     
     volumes:
       - ./logs:/app/airflow/logs
     command: ["airflow"]
-    healthcheck:
-      test: ["CMD", "airflow", "jobs", "check", "--job-type", "SchedulerJob", "--hostname", "$(hostname)"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    
+
   streamlit:
     image: ${IMAGE_NAME}
     container_name: streamlit_container
@@ -69,5 +62,6 @@ services:
       AWS_DEFAULT_REGION: ${AWS_REGION}
       BUCKET_NAME: ${BUCKET_NAME}
     command: ["streamlit"]
-  volumes:
+
+volumes:
   postgres_data:

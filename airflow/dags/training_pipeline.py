@@ -9,11 +9,13 @@ from airflow.operators.python import PythonOperator
 
 with DAG(
     'Restaurant_Rating_Model_Training',
-    default_args={'retries': 2},
+    default_args={'retries': 1},
+     max_active_runs=1,   # Only allow 1 active run at a time
+     concurrency=4,       # Number of concurrent tasks allowed
     # [END default_args]
     description='Restaurant Rating Prediction',
     schedule_interval="@weekly",
-    start_date=pendulum.datetime(2025, 3, 18, tz="UTC"),
+    start_date=pendulum.datetime(2025, 3, 17, tz="UTC"),
     catchup=False,
     tags=['example'],
 ) as dag:
