@@ -50,7 +50,7 @@ services:
      
     volumes:
       - ./logs:/app/airflow/logs
-    command: ["sh", "-c", "./start.sh"]
+    command: ["airflow"]
     healthcheck:
       test: ["CMD", "airflow", "jobs", "check", "--job-type", "SchedulerJob", "--hostname", "$(hostname)"]
       interval: 30s
@@ -68,9 +68,6 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
       BUCKET_NAME: ${BUCKET_NAME}
-    command: >
-      sh -c "streamlit run app.py --server.port 8501 --server.address=0.0.0.0 --server.enableCORS false &&
-      exec tail -f /dev/null"
-
-volumes:
+    command: ["streamlit"]
+  volumes:
   postgres_data:

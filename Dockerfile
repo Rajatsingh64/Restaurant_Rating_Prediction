@@ -31,3 +31,5 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Make start script executable
 RUN chmod +x start.sh
 
+# Entrypoint script
+ENTRYPOINT ["/app/start.sh"]
