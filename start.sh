@@ -14,8 +14,6 @@ fi
 echo "Upgrading Airflow database..."
 airflow db upgrade
 
-# Create default connections (optional)
-airflow "connections create-default-connections"
 
 echo "Ensuring Airflow Admin user exists..."
 if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then
