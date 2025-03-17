@@ -29,6 +29,9 @@ if [ "$1" = "airflow" ]; then
     echo "Admin user exists."
   fi
 
+  echo "Cleaning up any stale PID files..."
+  rm -f /root/airflow-webserver.pid || true
+
   echo "Starting Supervisor for Airflow Scheduler & Webserver..."
   exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
 

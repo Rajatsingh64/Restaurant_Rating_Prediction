@@ -40,7 +40,7 @@ services:
       AIRFLOW_PASSWORD: ${AIRFLOW_PASSWORD}
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      AIRFLOW__SCHEDULER__HEALTH_CHECK_PORT: 8899
+      AIRFLOW__CORE__DAGS_FOLDER: /app/airflow/dags
     volumes:
       - ./logs:/app/airflow/logs
     command: ["airflow"]  # Notice this!
