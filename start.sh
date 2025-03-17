@@ -29,8 +29,9 @@ if [ "$1" = "airflow" ]; then
     echo "Admin user exists."
   fi
 
-  echo "Starting Supervisor for Airflow Scheduler & Webserver..."
-  exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
+  #!bin/sh
+  nohup airflow scheduler &
+  airflow webserver
 
 elif [ "$1" = "streamlit" ]; then
   echo "Starting Streamlit app..."
