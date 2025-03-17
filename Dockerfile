@@ -28,5 +28,4 @@ RUN mkdir -p /app/airflow/logs
 # Make start script executable
 RUN chmod +x start.sh
 
-# Set entrypoint to start Airflow
-ENTRYPOINT ["start.sh"]
+ENTRYPOINT ["/app/start.sh"]
