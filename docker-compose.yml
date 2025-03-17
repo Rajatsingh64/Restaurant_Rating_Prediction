@@ -29,7 +29,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      AIRFLOW__CORE__EXECUTOR: KubernetesExecutor
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
       BUCKET_NAME: ${BUCKET_NAME}
       MONGO_DB_URL: ${MONGO_DB_URL}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
