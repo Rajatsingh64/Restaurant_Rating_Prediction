@@ -10,10 +10,21 @@ else
   echo "BUCKET_NAME is not set. Skipping S3 sync."
 fi
 
-echo "Initializing Airflow DB..."
-airflow db init
+echo "Migrating Airflow DB..."
+airflow db upgrade
+airflow connections create-default-connections
+
+echo "Deleting existing Admin user if exists..."
+airflow users delete "$AIRFLOW_USERNAME" || true
 
 echo "Creating fresh Admin user..."
-airflow users create --email "$AIRFLOW_EMAIL" --firstname "Admin" --lastname "User" --password "$AIRFLOW_PASSWORD" --role "Admin" --username "$AIRFLOW_USERNAME"
+airflow users create \
+  --email "$AIRFLOW_EMAIL" \
+  --firstname "Admin" \
+  --lastname "User" \
+  --password "$AIRFLOW_PASSWORD" \
+  --role "Admin" \
+  --username "$AIRFLOW_USERNAME"
 
-
+echo "Starting Supervisor to run Scheduler and Webserver..."
+exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
