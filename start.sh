@@ -10,9 +10,12 @@ else
   echo "BUCKET_NAME is not set. Skipping S3 sync."
 fi
 
-echo "Initializing Airflow DB..."
-airflow db init
-echo "DB Initialized."
+# Migrate Airflow database
+echo "Upgrading Airflow database..."
+airflow db upgrade
+
+# Create default connections (optional)
+airflow "connections create-default-connections"
 
 echo "Ensuring Airflow Admin user exists..."
 if ! airflow users list | grep -q "$AIRFLOW_USERNAME"; then
