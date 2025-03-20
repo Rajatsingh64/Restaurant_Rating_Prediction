@@ -171,3 +171,4 @@ test.py
 *.pyc
 local-host.pem
 local-host.pem.pub
+app
