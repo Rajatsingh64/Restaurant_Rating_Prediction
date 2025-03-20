@@ -22,3 +22,4 @@ test.py
 *.pyc
 local-host.pem
 local-host.pem.pub
+cleaned_zomato.csv

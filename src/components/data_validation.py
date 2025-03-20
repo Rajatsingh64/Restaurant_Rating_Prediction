@@ -19,7 +19,7 @@ class DataValidation:
                  data_ingestion_artifact:DataIngestionArtifact ):
         try:
             
-            logging.info(f'{">"*20} DATA VALIDATION {"<"*20}')
+            logging.info(f'{">"*20} Data Validation{"<"*20}')
             self.data_validation_config=data_validation_config 
             self.data_ingestion_artifact=data_ingestion_artifact
             self.validation_error=dict()

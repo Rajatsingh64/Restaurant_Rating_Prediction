@@ -8,15 +8,17 @@ This app predicts restaurant ratings based on user inputs, such as location, cui
 
 ---
 
-## 1. Training Pipeline
-![Training Pipeline](demo/app_image1.gif)
+---
 
-When you click the **"Run training Pipeline"** button, After clicking **"start training"** button the app starts training the machine learning model. Please note that training can take a significant amount of time, especially if the instance resources are low. Avoid triggering it frequently in such cases. 
+![Training](demo/gif_demo/gif_demo1.gif)
+
+![Batch Prediction ](demo/gif_demo/gif_demo2.gif)
 
 ---
 
+---
 ## 2. Prediction Page
-![Prediction Page](demo/app_image2.gif)
+![Streamlit App](demo/gif_demo/gif_demo3.gif)
 
 On the **Prediction Page**, accessible via the **"Predict Rate"** button in the sidebar, users can input features to predict restaurant ratings. The input form is split into two sections for ease of use:
 

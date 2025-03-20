@@ -2,7 +2,7 @@
 FROM python:3.12-slim
 
 # Set environment variables early
-ENV AIRFLOW_HOME=/app/airflow
+ENV AIRFLOW_HOME="/app/airflow"
 ENV AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True
 ENV AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000
 
