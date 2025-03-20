@@ -48,8 +48,6 @@ services:
     volumes:
       - airflow_logs:/app/airflow/logs
       - airflow_dags:/app/airflow/dags
-      - .:/app 
-    working_dir: /app
     command: ["airflow"]
 
   streamlit:
@@ -63,9 +61,6 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
       BUCKET_NAME: ${BUCKET_NAME}
-    volumes:
-    - .:/app   
-    working_dir: /app
     command: ["streamlit"]
 
 volumes:
