@@ -10,15 +10,15 @@ This app predicts restaurant ratings based on user inputs, such as location, cui
 
 ---
 
-![Training](demo/gif_demo/gif_demo1.gif)
+![Training](demo/gif_demo/rest_gif_demo1.gif)
 
-![Batch Prediction ](demo/gif_demo/gif_demo2.gif)
+![Batch Prediction ](demo/gif_demo/rest_gif_demo2.gif)
 
 ---
 
 ---
 ## 2. Prediction Page
-![Streamlit App](demo/gif_demo/gif_demo3.gif)
+![Streamlit App](demo/gif_demo/rest_gif_demo3.gif)
 
 On the **Prediction Page**, accessible via the **"Predict Rate"** button in the sidebar, users can input features to predict restaurant ratings. The input form is split into two sections for ease of use:
 
@@ -157,8 +157,6 @@ newgrp docker
 
 #### **GitHub Repo Secrets Setup**
 
-![Git Hub Secrets](demo/deploy_image1.gif)
-
 - `AWS_ACCESS_KEY_ID`=
 - `AWS_SECRET_ACCESS_KEY`=
 - `AWS_REGION`=
@@ -167,8 +165,6 @@ newgrp docker
 - `MONGO_DB_URL`=
 
 #### **Run All GitHub Runner Commands in AWS CLI and Activate It**
-
-![Git Hub Runner Activation](demo/deploy_image2.gif)
 
 1. Set Up GitHub Actions Runner on EC2
 2. Navigate to **Settings > Actions > Runners** in your GitHub repository.
