@@ -4,12 +4,6 @@ This project predicts restaurant ratings using the **Zomato Bengaluru Dataset** 
 
 ---
 
-This app predicts restaurant ratings based on user inputs, such as location, cuisine type, and more. Below is an overview of the app's functionality with visual representations of each feature.
-
----
-
----
-
 ![Training](demo/gif_demo/rest_gif_demo1.gif)
 
 ![Batch Prediction ](demo/gif_demo/rest_gif_demo2.gif)
