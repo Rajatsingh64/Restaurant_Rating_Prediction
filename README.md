@@ -9,8 +9,6 @@ This project predicts restaurant ratings using the **Zomato Bengaluru Dataset** 
 ![Batch Prediction ](demo/gif_demo/rest_gif_demo2.gif)
 
 ---
-
----
 ## 2. Prediction Page
 ![Streamlit App](demo/gif_demo/rest_gif_demo3.gif)
 
