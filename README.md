@@ -31,14 +31,7 @@ The app places a higher weight on features like:
 - **Approximate Cost**
 - **Book Table**
 
-These features significantly impact the prediction model's performance.
-
----
-
-## 3. Prediction Button
-![Prediction Button](demo/app_image3.gif)
-
-After entering the required details, click the **"Predict Rate"** button to get the predicted restaurant rating. The prediction result is displayed clearly, providing actionable insights.
+These features significantly impact the prediction model's performance.result is displayed clearly, providing actionable insights.
 
 ---
 
